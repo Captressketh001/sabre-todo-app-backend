@@ -5,6 +5,7 @@ export interface ITask extends Document {
   completed: boolean;
 }
 
+// schema
 const TaskSchema: Schema = new Schema({
   text: {
     type: String,
