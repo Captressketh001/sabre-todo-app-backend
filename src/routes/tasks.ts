@@ -24,9 +24,13 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     const { text } = req.body;
     const task: ITask = new Task({ text });
     await task.save();
-    res.status(201).json(task);
+    res.status(201).json({
+      response: task, 
+      status: 201,
+      msg: 'Todo Created',
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to create task" });
+    res.status(500).json({ error: "Failed to create todo" });
   }
 });
 
@@ -70,12 +74,27 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
  *               items:
  *                 $ref: '#/components/schemas/Todo'
  */
-router.get("/", async (_req: Request, res: Response): Promise<void> => {
+router.get("/", async (req: Request, res: Response): Promise<void> => {
   try {
-    const tasks: ITask[] = await Task.find();
-    res.status(200).json(tasks);
+    const { status } = req.query;
+    let filter = {};
+
+    if (status === "active") {
+      filter = { completed: false };
+    } else if (status === "completed") {
+      filter = { completed: true };
+    }
+
+    // Fetch tasks based on the filter
+    const tasks: ITask[] = await Task.find(filter);
+
+    res.status(200).json({
+      response: tasks,
+      status: 200,
+      msg: "success",
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch tasks" });
+    res.status(500).json({ error: "Failed to fetch todos" });
   }
 });
 
@@ -115,9 +134,13 @@ router.get("/filter", async (req: Request, res: Response): Promise<void> => {
         ? { completed: true }
         : {};
     const tasks: ITask[] = await Task.find(filter);
-    res.status(200).json(tasks);
+    res.status(200).json({
+      response: tasks, 
+      status: 200,
+      msg: 'success',
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to filter tasks" });
+    res.status(500).json({ error: "Failed to filter todos" });
   }
 });
 
@@ -154,12 +177,16 @@ router.put("/:id", async (req: Request, res: Response): Promise<void> => {
       { new: true }
     );
     if (!task) {
-      res.status(404).json({ error: "Task not found" });
+      res.status(404).json({ error: "Todo not found" });
       return;
     }
-    res.status(200).json(task);
+    res.status(200).json({
+      response: task, 
+      status: 200,
+      msg: 'Todo Updated',
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update task" });
+    res.status(500).json({ error: "Failed to update todo" });
   }
 });
 
@@ -185,12 +212,16 @@ router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const task: ITask | null = await Task.findByIdAndDelete(id);
     if (!task) {
-      res.status(404).json({ error: "Task not found" });
+      res.status(404).json({ error: "Todo not found" });
       return;
     }
-    res.status(200).json({ message: "Task deleted successfully" });
+    res.status(200).json({
+      response: task, 
+      status: 200,
+      msg:"Todo deleted successfully"
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete task" });
+    res.status(500).json({ error: "Failed to delete todo" });
   }
 });
 

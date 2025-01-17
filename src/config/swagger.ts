@@ -18,6 +18,10 @@ const swaggerOptions: Options = {
         url: "http://localhost:5000",
         description: "Local server",
       },
+      {
+        url: "https://sabre-todo-app-backend.onrender.com/",
+        description: "Development server",
+      },
     ],
   },
   apis: ["./src/routes/*.ts"], // Path to the API docs
