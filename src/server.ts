@@ -18,6 +18,9 @@ app.use(
   cors({
     origin: 'http://localhost:5173', 
     credentials: true, 
+  }, {
+    origin: 'https://sabre-todo-app-ffrontend.vercel.app/',
+    credentials: true,
   })
 );
 app.use(express.json());
