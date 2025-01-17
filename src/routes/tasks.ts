@@ -86,7 +86,7 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
     }
 
     // Fetch tasks based on the filter
-    const tasks: ITask[] = await Task.find(filter);
+    const tasks: ITask[] = await Task.find(filter).sort({ _id: -1 });
 
     res.status(200).json({
       response: tasks,
